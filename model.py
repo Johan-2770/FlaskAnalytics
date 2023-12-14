@@ -1,10 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.cluster import KMeans
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.svm import SVC
 
 # Import data
 data = pd.read_csv("data_UTS.csv")
@@ -44,6 +48,11 @@ data2 = pd.read_csv("cluster_labels.csv")
 dataFix = pd.concat([data, data2['cluster']],  axis=1)
 dataFix.to_csv('hasil_gabungan.csv', index=False)
 
+# Visualisasi klaster (Scatter plot untuk setiap pasangan fitur)
+sns.set(style="ticks")
+sns.pairplot(data, hue="cluster", palette="viridis")
+plt.show()
+
 # Memisahkan data menjadi data pelatihan dan pengujian
 X_train, X_test, y_train, y_test = train_test_split(input_columns, output_column, test_size=0.2, random_state=42)
 
@@ -58,3 +67,33 @@ print("Random Forest:")
 print(f'Accuracy: {accuracy_score(y_test, rf_pred)}')
 print(f'Confusion Matrix:\n{confusion_matrix(y_test, rf_pred)}')
 print(f'Classification Report:\n{classification_report(y_test, rf_pred)}')
+
+# Decision Tree
+dt_model = DecisionTreeClassifier(random_state=42)
+dt_model.fit(X_train, y_train)
+dt_pred = dt_model.predict(X_test)
+
+print("Decision Tree:")
+print(f'Accuracy: {accuracy_score(y_test, dt_pred)}')
+print(f'Confusion Matrix:\n{confusion_matrix(y_test, dt_pred)}')
+print(f'Classification Report:\n{classification_report(y_test, dt_pred)}')
+
+# Naive Bayes
+nb_model = GaussianNB()
+nb_model.fit(X_train, y_train)
+nb_pred = nb_model.predict(X_test)
+
+print("Naive Bayes:")
+print(f'Accuracy: {accuracy_score(y_test, nb_pred)}')
+print(f'Confusion Matrix:\n{confusion_matrix(y_test, nb_pred)}')
+print(f'Classification Report:\n{classification_report(y_test, nb_pred)}')
+
+# Support Vector Machine (SVM)
+svm_model = SVC(random_state=42)
+svm_model.fit(X_train, y_train)
+svm_pred = svm_model.predict(X_test)
+
+print("Support Vector Machine (SVM):")
+print(f'Accuracy: {accuracy_score(y_test, svm_pred)}')
+print(f'Confusion Matrix:\n{confusion_matrix(y_test, svm_pred)}')
+print(f'Classification Report:\n{classification_report(y_test, svm_pred)}')
